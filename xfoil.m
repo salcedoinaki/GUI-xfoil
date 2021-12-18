@@ -1,4 +1,51 @@
-function [pol,foil] = xfoil(coord,alpha,Re,Mach,varargin)
+
+function varargout = xfoil(varargin)
+% XFOIL MATLAB code for xfoil.fig
+%      XFOIL, by itself, creates a new XFOIL or raises the existing
+%      singleton*.
+%
+%      H = XFOIL returns the handle to a new XFOIL or the handle to
+%      the existing singleton*.
+%
+%      XFOIL('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in XFOIL.M with the given input arguments.
+%
+%      XFOIL('Property','Value',...) creates a new XFOIL or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before xfoil_OpeningFcn gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to xfoil_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
+
+% Edit the above text to modify the response to help xfoil
+
+% Last Modified by GUIDE v2.5 18-Dec-2021 02:31:04
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @xfoil_OpeningFcn, ...
+                   'gui_OutputFcn',  @xfoil_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+function [pol,foil] = xfoil_runtime(coord,alpha,Re,Mach,varargin)
 % Run XFoil and return the results.
 % [polar,foil] = xfoil(coord,alpha,Re,Mach,{extra commands})
 %
@@ -180,7 +227,7 @@ if only >1 % Only do the foil calculations if more than one left hand operator i
     jj = jj + 1;
 
     fid = fopen([wd filesep file_dump{ii}],'r');
-    if (fid<=0),
+    if (fid<=0)
       error([mfilename ':io'],'Unable to read xfoil output file %s',file_dump{ii});
     else
       D = textscan(fid,'%f%f%f%f%f%f%f%f','Delimiter',' ','MultipleDelimsAsOne',true,'CollectOutput',1,'HeaderLines',1);
@@ -285,3 +332,285 @@ end
   end
   
 end
+
+
+% --- Executes just before xfoil is made visible.
+function xfoil_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to xfoil (see VARARGIN)
+
+evalin( 'base', 'clear variables' )
+
+logo = imread('logo.png');
+imshow(logo, 'Parent', handles.grafico);
+
+
+% Choose default command line output for xfoil
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes xfoil wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = xfoil_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+
+
+function anguloAtaqueInicial_Callback(hObject, eventdata, handles)
+% hObject    handle to anguloAtaqueInicial (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+value = validate_field_value(hObject, handles);
+handles.inputData.anguloAtaqueInicial = value;
+guidata(hObject, handles);
+
+% Hints: get(hObject,'String') returns contents of anguloAtaqueInicial as text
+%        str2double(get(hObject,'String')) returns contents of anguloAtaqueInicial as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function anguloAtaqueInicial_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to anguloAtaqueInicial (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function numeroReynolds_Callback(hObject, eventdata, handles)
+% hObject    handle to numeroReynolds (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+value = validate_field_value(hObject, handles);
+handles.inputData.numeroReynolds = value;
+guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of numeroReynolds as text
+%        str2double(get(hObject,'String')) returns contents of numeroReynolds as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function numeroReynolds_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to numeroReynolds (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function numeroMach_Callback(hObject, eventdata, handles)
+% hObject    handle to numeroMach (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+value = validate_field_value(hObject, handles);
+handles.inputData.numeroMach = value;
+guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of numeroMach as text
+%        str2double(get(hObject,'String')) returns contents of numeroMach as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function numeroMach_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to numeroMach (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in calcular.
+function calcular_Callback(hObject, eventdata, handles)
+% hObject    handle to calcular (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+coord = handles.inputData.perfil;
+alpha = linspace(handles.inputData.anguloAtaqueInicial,handles.inputData.anguloAtaqueFinal,handles.inputData.cantidadPuntos);
+Re = handles.inputData.numeroReynolds;
+Mach = handles.inputData.numeroMach;
+
+
+[pol,foil] = xfoil_runtime(coord,alpha,Re,Mach);
+
+handles.resultados.polar=pol;
+handles.resultados.salida=foil;
+guidata(hObject, handles);
+
+
+% --- Executes on selection change in listGraficos.
+function listGraficos_Callback(hObject, eventdata, handles)
+% hObject    handle to listGraficos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+switch get(hObject,'Value') 
+    case 1
+        clearVisPanel(handles.grafico, [], handles)
+        plot(handles.resultados.polar.alpha,handles.resultados.polar.CL , 'Parent', handles.grafico)
+    case 2
+        clearVisPanel(handles.grafico, [], handles)
+        plot(handles.resultados.polar.alpha,handles.resultados.polar.CD , 'Parent', handles.grafico)
+    case 3
+        clearVisPanel(handles.grafico, [], handles)
+        plot(handles.resultados.polar.alpha , (handles.resultados.polar.CL ./ handles.resultados.polar.CD) , 'Parent', handles.grafico)
+end
+% Hints: contents = cellstr(get(hObject,'String')) returns listGraficos contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listGraficos
+
+
+% --- Executes during object creation, after setting all properties.
+function listGraficos_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listGraficos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function value = set_field_value(field_handle, value, factor_conversion)
+narginchk(2,3)
+
+if nargin == 2 
+   factor_conversion=1;
+end
+value= value*factor_conversion;
+if length(value) == 1
+    value = num2str(value);
+else
+    value = strjoin(string(value),',');
+end
+set(field_handle, 'String', value);
+
+function value = validate_field_value(field_handle, handles,factor_conversion)
+narginchk(2,3)
+if nargin ==2 
+   factor_conversion=1;
+end
+init_value = get(field_handle, 'String');
+value = NaN;
+if isempty(strfind(init_value, ','))
+    try
+        value = regexp(init_value, ',', 'split');
+        value = cell2mat(cellfun(@str2num, value, 'UniformOutput', false));
+    end
+else
+    value = str2double(init_value);
+end
+value= value/factor_conversion;
+
+
+% --- Executes on button press in cargarPerfil.
+function cargarPerfil_Callback(hObject, eventdata, handles)
+% hObject    handle to cargarPerfil (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% command = 'uiopen(''perfiles/*.dat'');';
+% evalin('base', command);
+
+[filename, pathname] = uigetfile({'*.dat'},'File Selector');
+if ~ischar(filename)
+    return;  % User aborted the file selection
+end
+file = fullfile(pathname, filename);
+Data = load(file);
+handles.inputData.perfil = Data;
+guidata(hObject, handles);
+
+% value = validate_field_value(hObject, handles);
+% handles.inputData.numeroMach = value;
+% guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function grafico_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to grafico (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate grafico
+
+
+
+function anguloAtaqueFinal_Callback(hObject, eventdata, handles)
+% hObject    handle to anguloAtaqueFinal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+value = validate_field_value(hObject, handles);
+handles.inputData.anguloAtaqueFinal = value;
+
+guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of anguloAtaqueFinal as text
+%        str2double(get(hObject,'String')) returns contents of anguloAtaqueFinal as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function anguloAtaqueFinal_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to anguloAtaqueFinal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function cantidadPuntos_Callback(hObject, eventdata, handles)
+% hObject    handle to cantidadPuntos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+value = validate_field_value(hObject, handles);
+handles.inputData.cantidadPuntos= value;
+
+guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of cantidadPuntos as text
+%        str2double(get(hObject,'String')) returns contents of cantidadPuntos as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function cantidadPuntos_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to cantidadPuntos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function clearVisPanel(hObject,~,handles)
+for i= 1:1:(size(handles.grafico.Children,1))
+delete(handles.grafico.Children(1));
+end
+guidata(hObject,handles);
